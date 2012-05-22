@@ -8,7 +8,7 @@ int main (int argc, char *argv[])
 {
   GtkWidget *window, *image;
   GdkPixbuf *pixbuf;
-  guint32 randnumx, randnumy, randnumc;
+  guint32 randnumx, randnumy, randnumr, randnumg, randnumb;
   GRand *grand;
   int index;
 
@@ -25,15 +25,16 @@ int main (int argc, char *argv[])
   g_print("Rowstride: %i\n", gdk_pixbuf_get_rowstride(pixbuf));
 
   /* random number structure for later */
-  grand = g_rand_new_with_seed(1234);
+  grand = g_rand_new_with_seed(12345);
   
   for(index = 0; index < 5096; index++)
     {
       randnumx = g_rand_int_range(grand, 0, 640);
       randnumy = g_rand_int_range(grand, 0, 480);
-      randnumc = g_rand_int_range(grand, 0, 255);
-
-      put_pixel(pixbuf, (int)randnumx, (int)randnumy, (guchar)randnumc, (guchar)randnumc, (guchar)randnumc, (guchar)randnumc);
+      randnumr = g_rand_int_range(grand, 0, 255);
+      randnumg = g_rand_int_range(grand, 0, 255);
+      randnumb = g_rand_int_range(grand, 0, 255);
+      put_pixel(pixbuf, (int)randnumx, (int)randnumy, (guchar)randnumr, (guchar)randnumg, (guchar)randnumb, 255);
     }
 
   /* create GtkImage from this pixbuf */
@@ -44,6 +45,7 @@ int main (int argc, char *argv[])
   gtk_container_add(GTK_CONTAINER(window), image);
   gtk_widget_show_all(window);
   g_signal_connect_swapped(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
   gtk_main();
 
   return 0;
