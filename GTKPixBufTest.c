@@ -3,12 +3,10 @@
 #include <stdio.h>
 #include "GTKPixBufTest.h"
 
-void put_pixel(GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha);
-
 int main (int argc, char *argv[])
 {
   struct widgets w;
-  guint32 randnumx, randnumy, randnumr, randnumg, randnumb;
+  struct RGBAPixel p;
   GRand *grand;
   int index;
 
@@ -24,20 +22,11 @@ int main (int argc, char *argv[])
   g_print("Colorspace: %i\n", gdk_pixbuf_get_colorspace(w.pixbuf));
   g_print("Rowstride: %i\n", gdk_pixbuf_get_rowstride(w.pixbuf));
 
-  /* random number structure for later */
-  grand = g_rand_new_with_seed(12345);
+  //sanity check to make sure we're drawing
+  //random pixels prior to timer doing it for us
+  //time_handler((gpointer) &w);
   
-  for(index = 0; index < 5096; index++)
-    {
-      randnumx = g_rand_int_range(grand, 0, 640);
-      randnumy = g_rand_int_range(grand, 0, 480);
-      randnumr = g_rand_int_range(grand, 0, 255);
-      randnumg = g_rand_int_range(grand, 0, 255);
-      randnumb = g_rand_int_range(grand, 0, 255);
-      put_pixel(w.pixbuf, (int)randnumx, (int)randnumy, (guchar)randnumr, (guchar)randnumg, (guchar)randnumb, 255);
-    }
 
-  /* create GtkImage from this pixbuf */
   w.image = gtk_image_new_from_pixbuf(w.pixbuf);
   
   //image = gtk_image_new_from_file("test.png");
@@ -45,6 +34,10 @@ int main (int argc, char *argv[])
   gtk_container_add(GTK_CONTAINER(w.window), w.image);
   gtk_widget_show_all(w.window);
   g_signal_connect_swapped(G_OBJECT(w.window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+  g_print("Widget main is: %p\n", &w);
+  g_print("Pixbuf main is: %p\n", w.pixbuf);
+  g_timeout_add(1000, (GSourceFunc) time_handler, (gpointer) &w);
 
   gtk_main();
 
