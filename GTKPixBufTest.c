@@ -1,28 +1,28 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "GTKPixBufTest.h"
 
 void put_pixel(GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha);
 
 int main (int argc, char *argv[])
 {
-  GtkWidget *window, *image;
-  GdkPixbuf *pixbuf;
+  struct widgets w;
   guint32 randnumx, randnumy, randnumr, randnumg, randnumb;
   GRand *grand;
   int index;
 
   gtk_init(&argc, &argv);
 
-  window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  w.window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   
   /* initialize pixbuf to nothing */
-  pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, 0, 8, 640, 480);
-  if (pixbuf == NULL) g_print("Something Happened\n");
+  w.pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, 0, 8, 640, 480);
+  if (w.pixbuf == NULL) g_print("Something Happened\n");
   /* some debug stuff */
-  g_print("Bits per sample: %i\n", gdk_pixbuf_get_bits_per_sample(pixbuf));
-  g_print("Colorspace: %i\n", gdk_pixbuf_get_colorspace(pixbuf));
-  g_print("Rowstride: %i\n", gdk_pixbuf_get_rowstride(pixbuf));
+  g_print("Bits per sample: %i\n", gdk_pixbuf_get_bits_per_sample(w.pixbuf));
+  g_print("Colorspace: %i\n", gdk_pixbuf_get_colorspace(w.pixbuf));
+  g_print("Rowstride: %i\n", gdk_pixbuf_get_rowstride(w.pixbuf));
 
   /* random number structure for later */
   grand = g_rand_new_with_seed(12345);
@@ -34,37 +34,19 @@ int main (int argc, char *argv[])
       randnumr = g_rand_int_range(grand, 0, 255);
       randnumg = g_rand_int_range(grand, 0, 255);
       randnumb = g_rand_int_range(grand, 0, 255);
-      put_pixel(pixbuf, (int)randnumx, (int)randnumy, (guchar)randnumr, (guchar)randnumg, (guchar)randnumb, 255);
+      put_pixel(w.pixbuf, (int)randnumx, (int)randnumy, (guchar)randnumr, (guchar)randnumg, (guchar)randnumb, 255);
     }
 
   /* create GtkImage from this pixbuf */
-  image = gtk_image_new_from_pixbuf(pixbuf);
+  w.image = gtk_image_new_from_pixbuf(w.pixbuf);
   
   //image = gtk_image_new_from_file("test.png");
   /* since image is now a pointer to a gtk container, we'll put it in our main window */
-  gtk_container_add(GTK_CONTAINER(window), image);
-  gtk_widget_show_all(window);
-  g_signal_connect_swapped(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+  gtk_container_add(GTK_CONTAINER(w.window), w.image);
+  gtk_widget_show_all(w.window);
+  g_signal_connect_swapped(G_OBJECT(w.window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
   gtk_main();
 
   return 0;
 }
-
-void put_pixel(GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar blue, guchar alpha)
-{
-  guchar *pixels, *p;
-  int rowstride, numchannels;
-
-  numchannels = gdk_pixbuf_get_n_channels(pixbuf);
-  rowstride = gdk_pixbuf_get_rowstride(pixbuf);
-  pixels = gdk_pixbuf_get_pixels(pixbuf);
-
-  p = pixels + y * rowstride + x * numchannels;
-
-  p[0] = red;
-  p[1] = green;
-  p[2] = blue;
-  p[3] = alpha;
-}
-  
