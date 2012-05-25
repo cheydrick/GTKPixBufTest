@@ -18,9 +18,9 @@ int main (int argc, char *argv[])
   w.pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, 0, 8, 640, 480);
   if (w.pixbuf == NULL) g_print("Something Happened\n");
   /* some debug stuff */
-  g_print("Bits per sample: %i\n", gdk_pixbuf_get_bits_per_sample(w.pixbuf));
-  g_print("Colorspace: %i\n", gdk_pixbuf_get_colorspace(w.pixbuf));
-  g_print("Rowstride: %i\n", gdk_pixbuf_get_rowstride(w.pixbuf));
+  //g_print("Bits per sample: %i\n", gdk_pixbuf_get_bits_per_sample(w.pixbuf));
+  //g_print("Colorspace: %i\n", gdk_pixbuf_get_colorspace(w.pixbuf));
+  //g_print("Rowstride: %i\n", gdk_pixbuf_get_rowstride(w.pixbuf));
 
   //sanity check to make sure we're drawing
   //random pixels prior to timer doing it for us
@@ -37,7 +37,7 @@ int main (int argc, char *argv[])
 
   g_print("Widget main is: %p\n", &w);
   g_print("Pixbuf main is: %p\n", w.pixbuf);
-  g_timeout_add(1000, (GSourceFunc) time_handler, (gpointer) &w);
+  g_timeout_add(10, (GSourceFunc) time_handler, (gpointer) &w);
 
   gtk_main();
 
