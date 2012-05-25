@@ -15,13 +15,14 @@ int main (int argc, char *argv[])
 
   w.image = gtk_image_new_from_pixbuf(w.pixbuf);
   
-  gtk_container_add(GTK_CONTAINER(w.window), w.image);
+  gtk_container_add(GTK_CONTAINER(w.window), GTK_WIDGET(w.image));
 
   gtk_widget_show_all(w.window);
-
   g_signal_connect_swapped(G_OBJECT(w.window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
   g_timeout_add(10, (GSourceFunc) time_handler, (gpointer) &w);
+
+  
 
   gtk_main();
 

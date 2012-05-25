@@ -18,6 +18,7 @@ void put_pixel(GdkPixbuf *pixbuf, int x, int y, guchar red, guchar green, guchar
 struct widgets
 {
   GtkWidget *window, *image;
+  //GtkImage *image;
   GdkPixbuf *pixbuf;
 };
 
@@ -49,7 +50,7 @@ gboolean time_handler(gpointer data)
   GtkWidget *i = d->image;
   
   put_random_rgba_pixel(p);
-  gtk_image_set_from_pixbuf(i,p);
+  gtk_image_set_from_pixbuf((GtkImage *)i,p);
   
   return TRUE;
 }
